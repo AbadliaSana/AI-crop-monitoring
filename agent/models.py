@@ -1,4 +1,5 @@
 from django.db import models
+from anomalies.models import AnomalyEvent
 
 
 class AgentRecommendation(models.Model):
@@ -8,36 +9,49 @@ class AgentRecommendation(models.Model):
         ("resolved", "Resolved"),
     ]
 
-    anomaly_event = models.ForeignKey(
-        "anomalies.AnomalyEvent",
+    anomaly_event = models.OneToOneField(
+        AnomalyEvent,
         on_delete=models.CASCADE,
-        related_name="recommendations",
-        help_text="Événement d'anomalie lié à cette recommandation."
+        related_name="recommendation",
+        help_text="Associated anomaly event that triggered this recommendation.",
     )
+
     timestamp = models.DateTimeField(
         auto_now_add=True,
-        help_text="Date/heure de génération de la recommandation."
+        help_text="Recommendation creation timestamp.",
     )
-    recommended_action = models.TextField(
-        help_text="Action recommandée pour le fermier."
+
+    action = models.TextField(
+        help_text="Action recommended by the agent."
     )
-    explanation_text = models.TextField(
-        help_text="Explication lisible par un humain (template de l'agent)."
+
+    explanation = models.TextField(
+        help_text="Human-readable explanation of the recommendation."
     )
+
     confidence = models.FloatField(
-        help_text="Confiance de la recommandation (0–1)."
+        help_text="Confidence score (0-1)."
     )
+
     status = models.CharField(
         max_length=20,
         choices=STATUS_CHOICES,
         default="pending",
-        help_text="Statut de la recommandation."
+        help_text="Current status of the recommendation.",
     )
 
     class Meta:
         ordering = ["-timestamp"]
-        verbose_name = "Recommandation agent"
-        verbose_name_plural = "Recommandations agent"
+        verbose_name = "Agent Recommendation"
+        verbose_name_plural = "Agent Recommendations"
 
     def __str__(self):
-        return f"Reco for {self.anomaly_event} ({self.status})"
+        return f"Recommendation for Event {self.anomaly_event.id} ({self.status})"
+
+    @property
+    def confidence_level(self):
+        if self.confidence >= 0.75:
+            return "high"
+        if self.confidence >= 0.45:
+            return "medium"
+        return "low"

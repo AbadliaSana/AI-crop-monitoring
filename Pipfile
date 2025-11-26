@@ -11,6 +11,14 @@ djangorestframework-simplejwt = "*"
 django-cors-headers = "*"
 django-environ = "*"
 django-filter = "*"
+numpy = "*"
+pandas = "*"
+faker = "*"
+requests = "*"
+celery = "*"
+joblib = "*"
+scikit-learn = "*"
+pytest = "*"
 
 [dev-packages]
 
