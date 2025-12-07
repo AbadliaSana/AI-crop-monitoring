@@ -2,6 +2,8 @@ import { BrowserRouter, Routes, Route, NavLink } from "react-router-dom";
 import DashboardPage from "./pages/DashboardPage.jsx";
 import PlotsPage from "./pages/PlotsPage.jsx";
 import AlertsPage from "./pages/AlertsPage.jsx";
+import LiveAnomaliesPage from "./pages/LiveAnomaliesPage.jsx";
+import BatchAnomaliesPage from "./pages/BatchAnomaliesPage.jsx";
 
 function Layout({ children }) {
   return (
@@ -54,6 +56,30 @@ function Layout({ children }) {
           >
             Anomalies & Agent
           </NavLink>
+          <NavLink
+            to="/live"
+            className={({ isActive }) =>
+              `block px-5 py-2 text-sm rounded-r-full transition-colors ${
+                isActive
+                  ? "bg-emerald-500 text-slate-950 font-medium"
+                  : "text-slate-300 hover:bg-slate-800"
+              }`
+            }
+          >
+            Live anomalies
+          </NavLink>
+          <NavLink
+            to="/batch"
+            className={({ isActive }) =>
+              `block px-5 py-2 text-sm rounded-r-full transition-colors ${
+                isActive
+                  ? "bg-emerald-500 text-slate-950 font-medium"
+                  : "text-slate-300 hover:bg-slate-800"
+              }`
+            }
+          >
+            Batch/historique
+          </NavLink>
         </nav>
 
         <div className="px-5 py-4 text-xs text-slate-500">
@@ -79,6 +105,8 @@ export default function App() {
           <Route path="/" element={<DashboardPage />} />
           <Route path="/plots" element={<PlotsPage />} />
           <Route path="/alerts" element={<AlertsPage />} />
+          <Route path="/live" element={<LiveAnomaliesPage />} />
+          <Route path="/batch" element={<BatchAnomaliesPage />} />
         </Routes>
       </Layout>
     </BrowserRouter>
