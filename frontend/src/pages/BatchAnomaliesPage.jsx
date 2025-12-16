@@ -110,23 +110,68 @@ export default function BatchAnomaliesPage() {
     [filtered],
   );
 
-  // Serie temps: anomalies par tranche (par heure pour 24h / par jour sinon).
+  // Serie temps: anomalies par tranche (heure sur 24h, jour sinon), avec remplissage des trous.
   const timeSeries = useMemo(() => {
-    if (!filtered.length) return { labels: [], data: [] };
-    const buckets = new Map();
+    if (!filtered.length) return { labels: [], data: [], granularity: "hour" };
+
+    const now = new Date();
     const useHour = range === "24h";
-    for (const a of filtered) {
-      const d = new Date(a.timestamp);
-      const label = useHour
-        ? d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
-        : d.toLocaleDateString();
-      buckets.set(label, (buckets.get(label) || 0) + 1);
+
+    // Taille de la fenetre selon le range.
+    let binCount;
+    if (useHour) {
+      binCount = 24;
+    } else if (range === "7d") {
+      binCount = 7;
+    } else {
+      // "all" : couvrir au plus 30 jours, mais au moins 7 pour une courbe lisible.
+      const earliestTs = filtered.reduce(
+        (acc, a) => Math.min(acc, new Date(a.timestamp).getTime()),
+        now.getTime(),
+      );
+      const daysSpan = Math.ceil((now.getTime() - earliestTs) / (24 * 60 * 60 * 1000)) + 1;
+      binCount = Math.min(30, Math.max(7, daysSpan));
     }
-    const arr = Array.from(buckets.entries());
-    arr.reverse(); // afficher du plus ancien au plus recent
+
+    // Construire les bacs vides.
+    const bins = [];
+    for (let i = binCount - 1; i >= 0; i--) {
+      const d = new Date(now);
+      if (useHour) {
+        d.setHours(d.getHours() - i, 0, 0, 0);
+      } else {
+        d.setHours(0, 0, 0, 0);
+        d.setDate(d.getDate() - i);
+      }
+      bins.push({
+        key: d.getTime(),
+        label: useHour
+          ? d.toLocaleTimeString([], { hour: "2-digit" })
+          : d.toLocaleDateString(),
+        count: 0,
+      });
+    }
+    const indexByKey = new Map(bins.map((b, idx) => [b.key, idx]));
+
+    // Remplir les bacs avec les anomalies.
+    filtered.forEach((a) => {
+      const d = new Date(a.timestamp);
+      if (useHour) {
+        d.setMinutes(0, 0, 0);
+      } else {
+        d.setHours(0, 0, 0, 0);
+      }
+      const key = d.getTime();
+      const idx = indexByKey.get(key);
+      if (idx !== undefined) {
+        bins[idx].count += 1;
+      }
+    });
+
     return {
-      labels: arr.map(([label]) => label),
-      data: arr.map(([, count]) => count),
+      labels: bins.map((b) => b.label),
+      data: bins.map((b) => b.count),
+      granularity: useHour ? "hour" : "day",
     };
   }, [filtered, range]);
 
@@ -204,10 +249,18 @@ export default function BatchAnomaliesPage() {
           <div>
             <h2 className="text-sm font-semibold text-slate-800">Flux agrege</h2>
             <p className="text-xs text-slate-400">
-              {range === "24h" ? "Par minute/heure" : "Par jour"} sur le filtre selectionne.
+              {range === "24h"
+                ? "Bac horaire sur les 24h (trous affiches a 0)."
+                : "Bac journalier (trous affiches a 0)."}{" "}
+              Selection actuelle appliquee.
             </p>
           </div>
-          <span className="text-[11px] text-slate-500">{timeSeries.data.length} points</span>
+          <div className="flex items-center gap-2 text-[11px] text-slate-500">
+            <span className="px-2 py-1 rounded-full border border-slate-200 bg-white shadow-sm">
+              {timeSeries.granularity === "hour" ? "Granularite: heure" : "Granularite: jour"}
+            </span>
+            <span>{timeSeries.data.length} points</span>
+          </div>
         </div>
         {loading ? (
           <div className="text-xs text-slate-500">Chargement...</div>

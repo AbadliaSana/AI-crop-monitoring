@@ -3,6 +3,7 @@ import time
 import math
 import random
 import requests
+from requests.exceptions import RequestException, ConnectionError as ReqConnectionError
 import numpy as np
 from datetime import datetime, timezone
 from dotenv import load_dotenv
@@ -47,7 +48,7 @@ def _set_access(access: str):
 # --------------------------
 # AUTH: obtain/refresh JWT access token
 # --------------------------
-def obtain_access_token() -> bool:
+def obtain_access_token(max_retries: int = 10, delay: int = 3) -> bool:
     """Login with username/password and set Authorization header."""
     global REFRESH_TOKEN
 
@@ -59,14 +60,32 @@ def obtain_access_token() -> bool:
         print("[auth] API_USERNAME / API_PASSWORD missing in .env")
         return False
 
-    resp = requests.post(
-        API_TOKEN_URL,
-        json={"username": API_USERNAME, "password": API_PASSWORD},
-        headers={"Content-Type": "application/json"},
-        timeout=10,
-    )
-    if resp.status_code != 200:
-        print(f"[auth] Failed to obtain token: {resp.status_code} {resp.text}")
+    attempt = 0
+    while attempt < max_retries:
+        attempt += 1
+        try:
+            resp = requests.post(
+                API_TOKEN_URL,
+                json={"username": API_USERNAME, "password": API_PASSWORD},
+                headers={"Content-Type": "application/json"},
+                timeout=10,
+            )
+        except ReqConnectionError as exc:
+            print(f"[auth] Conn refused (try {attempt}/{max_retries}) -> {exc}")
+            time.sleep(delay)
+            continue
+        except RequestException as exc:
+            print(f"[auth] Error contacting auth endpoint: {exc}")
+            time.sleep(delay)
+            continue
+
+        if resp.status_code != 200:
+            print(f"[auth] Failed to obtain token (try {attempt}/{max_retries}): {resp.status_code} {resp.text}")
+            time.sleep(delay)
+            continue
+
+        break
+    else:
         return False
 
     data = resp.json()
@@ -93,12 +112,16 @@ def refresh_access_token() -> bool:
     if not REFRESH_TOKEN:
         return False
 
-    resp = requests.post(
-        API_REFRESH_URL,
-        json={"refresh": REFRESH_TOKEN},
-        headers={"Content-Type": "application/json"},
-        timeout=10,
-    )
+    try:
+        resp = requests.post(
+            API_REFRESH_URL,
+            json={"refresh": REFRESH_TOKEN},
+            headers={"Content-Type": "application/json"},
+            timeout=10,
+        )
+    except RequestException as exc:
+        print(f"[auth] Refresh token call failed: {exc}")
+        return False
     if resp.status_code != 200:
         print(f"[auth] Failed to refresh token: {resp.status_code} {resp.text}")
         REFRESH_TOKEN = None
@@ -174,7 +197,11 @@ def send_reading(plot_id, sensor_type, value, timestamp):
         "source": "simulator",
     }
 
-    resp = requests.post(API_URL, json=payload, headers=HEADERS, timeout=10)
+    try:
+        resp = requests.post(API_URL, json=payload, headers=HEADERS, timeout=10)
+    except RequestException as exc:
+        print(f"[send] ERROR contacting API: {exc}")
+        return 0
 
     # If expired token, try refresh once then full login once
     if resp.status_code == 401:

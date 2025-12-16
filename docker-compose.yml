@@ -1,0 +1,70 @@
+version: "3.9"
+
+services:
+  web:
+    build: .
+    command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    env_file: .env.docker
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import socket; socket.create_connection(('localhost',8000),2)"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    depends_on:
+      - postgres
+      - redis
+
+  worker:
+    build: .
+    command: celery -A backend worker -l info
+    env_file: .env.docker
+    volumes:
+      - .:/app
+    depends_on:
+      - postgres
+      - redis
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    environment:
+          - VITE_API_BASE_URL=http://127.0.0.1:8000/api
+
+    ports:
+      - "5173:5173"
+    depends_on:
+      - web
+
+  redis:
+    image: redis:7
+    # no host port binding to avoid conflicts; services reach it via service name
+
+  streamer:
+    build: .
+    command: python backend/simulation/streamer.py
+    env_file: .env.docker
+    restart: unless-stopped
+    depends_on:
+      web:
+        condition: service_healthy
+    volumes:
+      - .:/app
+
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: smart_farming
+      POSTGRES_USER: smart_farming
+      POSTGRES_PASSWORD: smart_farming
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+volumes:
+  pgdata:

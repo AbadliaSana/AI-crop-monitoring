@@ -54,6 +54,7 @@ function HealthDot({ ok, label }) {
 }
 
 const SEVERITY_WEIGHT = { high: 3, medium: 2, low: 1 };
+const REFRESH_MS = 5000; // fetch every 5s for smoother live view
 
 export default function LiveAnomaliesPage() {
   const [anoms, setAnoms] = useState([]);
@@ -62,6 +63,7 @@ export default function LiveAnomaliesPage() {
   const [plotFilter, setPlotFilter] = useState("all");
   const [typeFilter, setTypeFilter] = useState("all");
   const [status, setStatus] = useState(null);
+  const [lastUpdate, setLastUpdate] = useState(null);
 
   useEffect(() => {
     let mounted = true;
@@ -79,6 +81,7 @@ export default function LiveAnomaliesPage() {
         if (mounted) {
           setAnoms(anomRes.data?.results || anomRes.data || []);
           setStatus(statusRes?.data || null);
+          setLastUpdate(new Date());
         }
       } catch (e) {
         console.error("Live anomalies error", e);
@@ -89,7 +92,7 @@ export default function LiveAnomaliesPage() {
     }
 
     fetchData();
-    const id = setInterval(fetchData, 10000); // refresh toutes les 10s
+    const id = setInterval(fetchData, REFRESH_MS); // refresh toutes les 5s
     return () => {
       mounted = false;
       clearInterval(id);
@@ -179,10 +182,16 @@ export default function LiveAnomaliesPage() {
         <div>
           <h1 className="text-2xl font-semibold text-slate-900">Live anomalies</h1>
           <p className="text-sm text-slate-500">
-            Flux temps reel (derniere heure) + historique sauvegarde. Auto-refresh 15s.
+            Flux temps reel (derniere heure) + historique sauvegarde. Auto-refresh 5s.
           </p>
         </div>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-2 items-center">
+          <span className="text-[11px] px-2 py-1 rounded-full border border-slate-200 bg-white shadow-sm">
+            Rafraichi toutes les {(REFRESH_MS / 1000).toFixed(0)}s
+          </span>
+          <span className="text-[11px] px-2 py-1 rounded-full border border-emerald-200 bg-emerald-50 text-emerald-700">
+            Derniere maj: {lastUpdate ? new Date(lastUpdate).toLocaleTimeString() : "—"}
+          </span>
           <select
             value={plotFilter}
             onChange={(e) => setPlotFilter(e.target.value)}

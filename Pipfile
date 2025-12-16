@@ -17,8 +17,10 @@ faker = "*"
 requests = "*"
 celery = "*"
 joblib = "*"
-scikit-learn = "*"
+scikit-learn = "==1.7.2"
 pytest = "*"
+psycopg2-binary = "*"
+redis = "*"
 
 [dev-packages]
 
