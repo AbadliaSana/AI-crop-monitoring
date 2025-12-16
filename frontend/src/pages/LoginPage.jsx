@@ -63,41 +63,38 @@ export default function LoginPage() {
 
   return (
     <div
-      className="min-h-screen flex items-center justify-center relative overflow-hidden bg-slate-950 px-4"
-      style={{
-        background:
-          "radial-gradient(circle at 20% 20%, rgba(16,185,129,0.12), transparent 35%), radial-gradient(circle at 80% 10%, rgba(15,118,110,0.1), transparent 30%), #0f172a",
-      }}
+      className="min-h-screen flex items-center justify-center relative overflow-hidden px-4"
+      style={{ background: "var(--bg-gradient)" }}
     >
-      <div className="w-full max-w-2xl bg-slate-900/95 border border-slate-800 rounded-3xl p-8 shadow-[0_20px_60px_rgba(0,0,0,0.35)] relative z-10">
+      <div className="w-full max-w-2xl bg-white/92 border border-[var(--border-soft)] rounded-3xl p-8 shadow-[0_18px_46px_rgba(15,23,42,0.12)] backdrop-blur">
         {/* Header aligned with app theme */}
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
-            <div className="w-11 h-11 rounded-2xl bg-emerald-500 text-slate-950 flex items-center justify-center text-xl font-bold shadow-lg shadow-emerald-500/35">
+            <div className="w-11 h-11 rounded-2xl bg-[var(--accent)] text-white flex items-center justify-center text-xl font-bold shadow-lg shadow-[rgba(93,156,86,0.25)]">
               SF
             </div>
             <div>
-              <div className="text-slate-50 text-lg font-semibold tracking-tight">Smart Farming</div>
-              <div className="text-slate-400 text-sm">Portail securise par JWT</div>
+              <div className="text-slate-900 text-lg font-semibold tracking-tight">Smart Farming</div>
+              <div className="text-slate-500 text-sm">Portail sécurisé par JWT</div>
             </div>
           </div>
-          <div className="flex items-center gap-2 px-3 py-1.5 text-xs rounded-full bg-slate-800 border border-slate-700 text-emerald-200">
-            <span className="inline-flex w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+          <div className="flex items-center gap-2 px-3 py-1.5 text-xs rounded-full bg-[var(--panel-strong)] border border-[var(--border-soft)] text-[var(--accent)]">
+            <span className="inline-flex w-2 h-2 rounded-full bg-[var(--accent)] animate-ping" />
             <span className="font-medium">JWT Ready</span>
           </div>
         </div>
 
         {/* AI robot badge */}
-        <div className="flex items-center gap-3 mb-6 p-4 rounded-2xl border border-slate-800 bg-slate-900/80">
+        <div className="flex items-center gap-3 mb-6 p-4 rounded-2xl border border-[var(--border-soft)] bg-white/80">
           <div className="relative">
-            <div className="absolute inset-0 rounded-full blur-md bg-emerald-500/25 animate-[pulse_8s_ease-in-out_infinite]" />
-            <div className="w-14 h-14 rounded-full bg-slate-800 border border-emerald-500 text-emerald-300 flex items-center justify-center font-semibold relative z-10">
+            <div className="absolute inset-0 rounded-full blur-md bg-[var(--accent-3)]/40 animate-[pulse_8s_ease-in-out_infinite]" />
+            <div className="w-14 h-14 rounded-full bg-white border border-[var(--accent)] text-[var(--accent)] flex items-center justify-center font-semibold relative z-10">
               AI
             </div>
           </div>
-          <div className="text-sm text-slate-200">
-            <div className="font-semibold text-emerald-300">Robot IA de surveillance</div>
-            <div className="text-slate-400">Authentifie-toi pour activer le smart farming en temps reel.</div>
+          <div className="text-sm text-slate-800">
+            <div className="font-semibold text-[var(--accent)]">Robot IA de surveillance</div>
+            <div className="text-slate-600">Authentifie-toi pour activer le smart farming en temps réel.</div>
           </div>
         </div>
 
@@ -108,8 +105,8 @@ export default function LoginPage() {
             onClick={() => setMode("signin")}
             className={`py-2.5 rounded-xl border transition-all flex items-center justify-center gap-2 ${
               mode === "signin"
-                ? "bg-emerald-500 text-slate-950 border-emerald-300 shadow-lg shadow-emerald-500/30"
-                : "bg-slate-800 text-slate-200 border-slate-700 hover:border-slate-600"
+                ? "bg-[var(--accent)] text-white border-[var(--accent-2)] shadow-lg shadow-[rgba(93,156,86,0.25)]"
+                : "bg-[var(--panel-strong)] text-slate-700 border-[var(--border-soft)] hover:border-[var(--accent-3)]"
             }`}
           >
             <span>></span>
@@ -120,8 +117,8 @@ export default function LoginPage() {
             onClick={() => setMode("signup")}
             className={`py-2.5 rounded-xl border transition-all flex items-center justify-center gap-2 ${
               mode === "signup"
-                ? "bg-emerald-500 text-slate-950 border-emerald-300 shadow-lg shadow-emerald-500/30"
-                : "bg-slate-800 text-slate-200 border-slate-700 hover:border-slate-600"
+                ? "bg-[var(--accent)] text-white border-[var(--accent-2)] shadow-lg shadow-[rgba(93,156,86,0.25)]"
+                : "bg-[var(--panel-strong)] text-slate-700 border-[var(--border-soft)] hover:border-[var(--accent-3)]"
             }`}
           >
             <span>+</span>
@@ -131,27 +128,27 @@ export default function LoginPage() {
 
         {/* Quick info badges */}
         <div className="grid md:grid-cols-3 gap-3 mb-5">
-          <div className="text-xs text-slate-300 border border-slate-800 rounded-2xl p-3 bg-slate-900/80 flex items-center gap-2">
-            <span className="text-emerald-300">API</span>
+          <div className="text-xs text-slate-700 border border-[var(--border-soft)] rounded-2xl p-3 bg-white/80 flex items-center gap-2">
+            <span className="text-[var(--accent)]">API</span>
             <div>
-              <div className="font-semibold text-slate-100">Endpoints</div>
-              <div className="font-mono text-[11px] text-emerald-200">POST /api/token/</div>
-              <div className="font-mono text-[11px] text-emerald-200">POST /api/register/</div>
+              <div className="font-semibold text-slate-900">Endpoints</div>
+              <div className="font-mono text-[11px] text-[var(--accent)]">POST /api/token/</div>
+              <div className="font-mono text-[11px] text-[var(--accent)]">POST /api/register/</div>
             </div>
           </div>
-          <div className="text-xs text-slate-300 border border-slate-800 rounded-2xl p-3 bg-slate-900/80 flex items-center gap-2">
-            <span className="text-emerald-300">SEC</span>
+          <div className="text-xs text-slate-700 border border-[var(--border-soft)] rounded-2xl p-3 bg-white/80 flex items-center gap-2">
+            <span className="text-[var(--accent)]">SEC</span>
             <div>
-              <div className="font-semibold text-slate-100">Acces</div>
-              <div>Dashboard protege</div>
+              <div className="font-semibold text-slate-900">Accès</div>
+              <div>Dashboard protégé</div>
               <div>Redirection auto</div>
             </div>
           </div>
-          <div className="text-xs text-slate-300 border border-slate-800 rounded-2xl p-3 bg-slate-900/80 flex items-center gap-2">
-            <span className="text-emerald-300">BOT</span>
+          <div className="text-xs text-slate-700 border border-[var(--border-soft)] rounded-2xl p-3 bg-white/80 flex items-center gap-2">
+            <span className="text-[var(--accent)]">BOT</span>
             <div>
-              <div className="font-semibold text-slate-100">Smart farming</div>
-              <div>JWT en clair apres login</div>
+              <div className="font-semibold text-slate-900">Smart farming</div>
+              <div>JWT en clair après login</div>
               <div>Stockage local</div>
             </div>
           </div>
@@ -159,31 +156,31 @@ export default function LoginPage() {
 
         <form className="space-y-4" onSubmit={handleSubmit}>
           <div className="space-y-1">
-            <label className="block text-slate-200 text-sm font-medium">Nom d'utilisateur</label>
+            <label className="block text-slate-700 text-sm font-medium">Nom d'utilisateur</label>
             <div className="relative">
               <input
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 required
-                className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-slate-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 pr-10"
+                className="w-full bg-white border border-[var(--border-soft)] rounded-xl px-3 py-2.5 text-slate-900 focus:outline-none focus:ring-2 focus:ring-[var(--accent)] pr-10"
                 placeholder="ex: emna"
               />
-              <span className="absolute right-3 top-2.5 text-slate-500 text-xs">usr</span>
+              <span className="absolute right-3 top-2.5 text-slate-400 text-xs">usr</span>
             </div>
           </div>
           <div className="space-y-1">
-            <label className="block text-slate-200 text-sm font-medium">Mot de passe</label>
+            <label className="block text-slate-700 text-sm font-medium">Mot de passe</label>
             <div className="relative">
               <input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-slate-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 pr-10"
+                className="w-full bg-white border border-[var(--border-soft)] rounded-xl px-3 py-2.5 text-slate-900 focus:outline-none focus:ring-2 focus:ring-[var(--accent)] pr-10"
                 placeholder="mot de passe"
               />
-              <span className="absolute right-3 top-2.5 text-slate-500 text-xs">***</span>
+              <span className="absolute right-3 top-2.5 text-slate-400 text-xs">***</span>
             </div>
           </div>
 
@@ -203,7 +200,7 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-semibold py-3 rounded-xl transition disabled:opacity-60 disabled:cursor-not-allowed shadow-lg shadow-emerald-500/30"
+            className="w-full bg-[var(--accent)] hover:bg-[var(--accent-2)] text-white font-semibold py-3 rounded-xl transition disabled:opacity-60 disabled:cursor-not-allowed shadow-lg shadow-[rgba(93,156,86,0.25)]"
           >
             {loading
               ? mode === "signin"

@@ -27,94 +27,57 @@ function Layout() {
     navigate("/login", { replace: true });
   };
 
+  const menu = [
+    { to: "/", label: "Dashboard", end: true },
+    { to: "/plots", label: "Plots & Charts" },
+    { to: "/alerts", label: "Anomalies & Agent" },
+    { to: "/live", label: "Live anomalies" },
+    { to: "/batch", label: "Batch/historique" },
+  ];
+
   return (
-    <div className="min-h-screen flex">
+    <div className="min-h-screen flex" style={{ background: "var(--bg-gradient)" }}>
       {/* Sidebar */}
-      <aside className="w-60 bg-slate-950 text-slate-50 flex flex-col border-r border-slate-800">
-        <div className="px-5 py-4 border-b border-slate-800 flex items-center gap-3">
-          <div className="w-11 h-11 rounded-2xl bg-emerald-500 text-slate-950 flex items-center justify-center text-xl font-bold shadow-lg shadow-emerald-500/30">
+      <aside className="w-64 bg-white/92 text-slate-800 flex flex-col border-r border-[var(--border-soft)] backdrop-blur-md shadow-md">
+        <div className="px-5 py-4 border-b border-[var(--border-soft)] flex items-center gap-3">
+          <div className="w-11 h-11 rounded-2xl bg-[var(--accent)] text-white flex items-center justify-center text-xl font-bold shadow-lg shadow-[rgba(93,156,86,0.25)]">
             SF
           </div>
           <div>
-            <div className="font-semibold text-sm text-slate-50">Smart Farming</div>
-            <div className="text-xs text-slate-400">AI Monitoring Agent</div>
+            <div className="font-semibold text-sm text-slate-900">Smart Farming</div>
+            <div className="text-xs text-slate-500">AI Monitoring Agent</div>
           </div>
         </div>
 
         <nav className="flex-1 py-4 space-y-1">
-          <NavLink
-            to="/"
-            end
-            className={({ isActive }) =>
-              `block px-5 py-2 text-sm rounded-r-full transition-colors ${
-                isActive
-                  ? "bg-emerald-500 text-slate-950 font-medium"
-                  : "text-slate-300 hover:bg-slate-800"
-              }`
-            }
-          >
-            Dashboard
-          </NavLink>
-          <NavLink
-            to="/plots"
-            className={({ isActive }) =>
-              `block px-5 py-2 text-sm rounded-r-full transition-colors ${
-                isActive
-                  ? "bg-emerald-500 text-slate-950 font-medium"
-                  : "text-slate-300 hover:bg-slate-800"
-              }`
-            }
-          >
-            Plots & Charts
-          </NavLink>
-          <NavLink
-            to="/alerts"
-            className={({ isActive }) =>
-              `block px-5 py-2 text-sm rounded-r-full transition-colors ${
-                isActive
-                  ? "bg-emerald-500 text-slate-950 font-medium"
-                  : "text-slate-300 hover:bg-slate-800"
-              }`
-            }
-          >
-            Anomalies & Agent
-          </NavLink>
-          <NavLink
-            to="/live"
-            className={({ isActive }) =>
-              `block px-5 py-2 text-sm rounded-r-full transition-colors ${
-                isActive
-                  ? "bg-emerald-500 text-slate-950 font-medium"
-                  : "text-slate-300 hover:bg-slate-800"
-              }`
-            }
-          >
-            Live anomalies
-          </NavLink>
-          <NavLink
-            to="/batch"
-            className={({ isActive }) =>
-              `block px-5 py-2 text-sm rounded-r-full transition-colors ${
-                isActive
-                  ? "bg-emerald-500 text-slate-950 font-medium"
-                  : "text-slate-300 hover:bg-slate-800"
-              }`
-            }
-          >
-            Batch/historique
-          </NavLink>
+          {menu.map((item) => (
+            <NavLink
+              key={item.to}
+              to={item.to}
+              end={item.end}
+              className={({ isActive }) =>
+                `block px-5 py-2 text-sm rounded-r-full transition-all ${
+                  isActive
+                    ? "bg-[var(--accent)]/18 text-slate-900 font-semibold border-l-4 border-[var(--accent)]"
+                    : "text-slate-600 hover:bg-[var(--panel-strong)]"
+                }`
+              }
+            >
+              {item.label}
+            </NavLink>
+          ))}
         </nav>
 
-        <div className="px-5 py-4 text-xs text-slate-400 space-y-3">
-          <div className="text-xs text-slate-500">
+        <div className="px-5 py-4 text-xs text-slate-500 space-y-3 border-t border-[var(--border-soft)] bg-white/70">
+          <div className="text-xs text-slate-600">
             JWT actif:
-            <div className="mt-1 font-mono text-[11px] text-emerald-300 break-all">
+            <div className="mt-1 font-mono text-[11px] text-[var(--accent)] break-all">
               {tokenPreview}
             </div>
           </div>
           <button
             onClick={handleLogout}
-            className="w-full text-sm bg-slate-800 hover:bg-slate-700 text-slate-50 py-2 rounded-md transition"
+            className="w-full text-sm bg-[var(--accent)] hover:bg-[var(--accent-2)] text-white py-2 rounded-md transition shadow-md"
           >
             Se déconnecter
           </button>
@@ -122,7 +85,7 @@ function Layout() {
       </aside>
 
       {/* Main content */}
-      <main className="flex-1 bg-[var(--bg-main)]">
+      <main className="flex-1 bg-[var(--bg-gradient)]">
         <div className="max-w-6xl mx-auto px-6 py-6 space-y-6">
           <Outlet />
         </div>
