@@ -23,8 +23,9 @@ class AnomalyResult:
 class ThresholdRollingModel:
     """
     Simple but effective: hard thresholds + rolling z-score.
+    z_threshold légèrement relevé pour réduire les faux positifs.
     """
-    def __init__(self, thresholds=None, z_threshold: float = 1.8):
+    def __init__(self, thresholds=None, z_threshold: float = 2.3):
         self.thresholds = thresholds or DEFAULT_THRESHOLDS
         self.z_threshold = z_threshold
 

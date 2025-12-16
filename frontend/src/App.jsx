@@ -12,6 +12,7 @@ import PlotsPage from "./pages/PlotsPage.jsx";
 import AlertsPage from "./pages/AlertsPage.jsx";
 import LiveAnomaliesPage from "./pages/LiveAnomaliesPage.jsx";
 import BatchAnomaliesPage from "./pages/BatchAnomaliesPage.jsx";
+import EvaluationPage from "./pages/EvaluationPage.jsx";
 import LoginPage from "./pages/LoginPage.jsx";
 import { clearTokens, isAuthenticated, getAccessToken } from "./services/auth.js";
 
@@ -33,6 +34,7 @@ function Layout() {
     { to: "/alerts", label: "Anomalies & Agent" },
     { to: "/live", label: "Live anomalies" },
     { to: "/batch", label: "Batch/historique" },
+    { to: "/eval", label: "Évaluation ML" },
   ];
 
   return (
@@ -112,6 +114,7 @@ export default function App() {
           <Route path="/alerts" element={<AlertsPage />} />
           <Route path="/live" element={<LiveAnomaliesPage />} />
           <Route path="/batch" element={<BatchAnomaliesPage />} />
+          <Route path="/eval" element={<EvaluationPage />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

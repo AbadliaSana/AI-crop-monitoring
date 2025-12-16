@@ -6,6 +6,7 @@ from anomalies.views import AnomalyEventViewSet
 from agent.views import AgentRecommendationViewSet
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from backend.status import StatusView
+from ml_module.views import MetricsView
 from accounts.views import RegisterView
 
 router = DefaultRouter()
@@ -24,4 +25,5 @@ urlpatterns = [
     # API
     path("api/", include(router.urls)),
     path("api/status/", StatusView.as_view(), name="status"),
+    path("api/metrics/", MetricsView.as_view(), name="metrics"),
 ]

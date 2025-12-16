@@ -109,7 +109,7 @@ export default function LoginPage() {
                 : "bg-[var(--panel-strong)] text-slate-700 border-[var(--border-soft)] hover:border-[var(--accent-3)]"
             }`}
           >
-            <span>></span>
+            <span>→</span>
             <span>Se connecter</span>
           </button>
           <button
